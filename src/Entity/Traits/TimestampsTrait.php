@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait TimestampsTrait
 {
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable")
      * @var DateTimeImmutable
      */
     private DateTimeImmutable $createdAt;
