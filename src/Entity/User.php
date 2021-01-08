@@ -12,11 +12,27 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ *
+ * @ApiResource(
+ *     collectionOperations={
+ *          "get"={
+ *              "normalization_context"={"groups"={"user_read"}}
+ *          }
+ *     },
+ *     itemOperations={
+ *          "get"={
+ *              "normalization_context"={"groups"={"user_details_read"}}
+ *          },
+ *          "put",
+ *          "patch",
+ *          "delete"
+ *     }
+ * )
  */
 class User implements UserInterface
 {
@@ -25,6 +41,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     *
+     * @Groups({"user_read", "user_details_read", "article_details_read"})
      */
     private string $email;
 
@@ -40,7 +58,10 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="author", orphanRemoval=true)
+     *
      * @var Collection|Article[]
+     *
+     * @Groups({"user_details_read"})
      */
     private Collection $articles;
 

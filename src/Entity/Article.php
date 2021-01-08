@@ -9,11 +9,26 @@ use App\Entity\Traits\ResourceIdTrait;
 use App\Entity\Traits\TimestampsTrait;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ * @ApiResource(
+ *     collectionOperations={
+ *          "get"={
+ *              "normalization_context"={"groups"={"article_read"}}
+ *          }
+ *     },
+ *     itemOperations={
+ *          "get"={
+ *              "normalization_context"={"groups"={"article_details_read"}}
+ *          },
+ *          "put",
+ *          "patch",
+ *          "delete"
+ *     }
+ * )
  */
 class Article
 {
@@ -22,17 +37,23 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Groups({"article_read", "user_details_read", "article_details_read"})
      */
     private string $name;
 
     /**
      * @ORM\Column(type="text")
+     *
+     * @Groups({"article_read", "user_details_read"})
      */
     private string $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="articles")
      * @ORM\JoinColumn(nullable=false)
+     *
+     * @Groups({"article_details_read"})
      */
     private ?User $author;
 
