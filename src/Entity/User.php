@@ -28,6 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={
  *              "normalization_context"={"groups"={"user_details_read"}}
  *          },
+ *          "post",
  *          "put",
  *          "patch",
  *          "delete"

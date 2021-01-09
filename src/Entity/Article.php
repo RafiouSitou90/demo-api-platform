@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\ArticleUpdatedAt;
 use App\Entity\Traits\ResourceIdTrait;
 use App\Entity\Traits\TimestampsTrait;
 use App\Repository\ArticleRepository;
@@ -24,9 +25,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={
  *              "normalization_context"={"groups"={"article_details_read"}}
  *          },
+ *          "post",
  *          "put",
  *          "patch",
- *          "delete"
+ *          "delete",
+ *          "put_updated_at"={
+ *              "method"="PUT",
+ *              "path"="/articles/{id}/updated-at",
+ *              "controller"=ArticleUpdatedAt::class,
+ *          }
  *     }
  * )
  */
