@@ -4,7 +4,15 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Traits\ResourceIdTrait;
 use App\Entity\Traits\TimestampsTrait;
 use App\Repository\UserRepository;
@@ -22,18 +30,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations={
  *          "get"={
  *              "normalization_context"={"groups"={"user_read"}}
- *          }
+ *          },
+ *          "post"
  *     },
  *     itemOperations={
  *          "get"={
  *              "normalization_context"={"groups"={"user_details_read"}}
  *          },
- *          "post",
  *          "put",
  *          "patch",
  *          "delete"
  *     }
  * )
+ * @ApiFilter(SearchFilter::class, properties={"email": "partial"})
+ * @ApiFilter(DateFilter::class, properties={"createdAt"})
+ * @ApiFilter(BooleanFilter::class, properties={"isVerified"})
+ * @ApiFilter(NumericFilter::class, properties={"age"})
+ * @ApiFilter(RangeFilter::class, properties={"age"})
+ * @ApiFilter(ExistsFilter::class, properties={"updatedAt"})
+ * @ApiFilter(OrderFilter::class, properties={"id"}, arguments={"orderParameterName"="order"})
  */
 class User implements UserInterface
 {
@@ -65,6 +80,20 @@ class User implements UserInterface
      * @Groups({"user_details_read"})
      */
     private Collection $articles;
+
+    /**
+     * @ORM\Column(type="boolean")
+     *
+     * @Groups({"user_read", "user_details_read", "article_details_read"})
+     */
+    private bool $isVerified = false;
+
+    /**
+     * @ORM\Column(type="integer")
+     *
+     * @Groups({"user_read", "user_details_read", "article_details_read"})
+     */
+    private int $age = 18;
 
     public function __construct()
     {
@@ -170,6 +199,30 @@ class User implements UserInterface
                 $article->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
+
+    public function setAge(int $age): self
+    {
+        $this->age = $age;
 
         return $this;
     }

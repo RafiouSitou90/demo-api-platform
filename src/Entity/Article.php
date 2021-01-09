@@ -19,13 +19,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations={
  *          "get"={
  *              "normalization_context"={"groups"={"article_read"}}
- *          }
+ *          },
+ *          "post"
  *     },
  *     itemOperations={
  *          "get"={
  *              "normalization_context"={"groups"={"article_details_read"}}
  *          },
- *          "post",
  *          "put",
  *          "patch",
  *          "delete",
