@@ -10,6 +10,7 @@ use App\Entity\Traits\ResourceIdTrait;
 use App\Entity\Traits\TimestampsTrait;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -62,7 +63,7 @@ class Article
      *
      * @Groups({"article_details_read"})
      */
-    private ?User $author;
+    private User $author;
 
     public function getName(): ?string
     {
@@ -88,12 +89,16 @@ class Article
         return $this;
     }
 
-    public function getAuthor(): ?User
+    public function getAuthor(): User
     {
         return $this->author;
     }
 
-    public function setAuthor(?User $author): self
+    /**
+     * @param User|UserInterface $author
+     * @return $this
+     */
+    public function setAuthor(User $author): self
     {
         $this->author = $author;
 
